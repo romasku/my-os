@@ -1,8 +1,13 @@
-#ifndef OS_ROOT_TTY_H
-#define OS_ROOT_TTY_H
+#ifndef KERNEL_TTY_H
+#define KERNEL_TTY_H
 #include <stddef.h>
 
-void terminal_initialize(void);
-void terminal_write(const char *data, size_t size);
+#define MODE_80x24 1
 
-#endif //OS_ROOT_TTY_H
+void tty_initialize(void);
+void tty_enable_mode(size_t mode);
+void tty_putchar(char ascii);
+void tty_write(const char *data, size_t size);
+void tty_clear_screen();
+
+#endif //KERNEL_TTY_H
