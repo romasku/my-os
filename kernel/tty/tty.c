@@ -1,6 +1,7 @@
 #include <kernel/tty.h>
 #include <kernel/arch/tty.h>
 #include <kernel/panic.h>
+#include <kernel/kprintf.h>
 
 // TODO: do not assume buffer_width == screen_width and same for height
 
@@ -15,9 +16,10 @@ size_t cursor_x, cursor_y;
 
 
 void tty_initialize() {
-    arch_tty_enable_mode(MODE_80x24);
+    tty_enable_mode(MODE_80x24);
     tty_clear_screen();
-    tty_write("Init\ninit!!!", 12);
+    kprintf("Terminal initialized!\n");
+    kprintf("Current mode is %ux%u\n", screen_width, screen_height);
 }
 
 void tty_enable_mode(size_t mode) {
