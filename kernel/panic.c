@@ -7,4 +7,5 @@ void panic_no_tty() {
 
 void panic(const char *message) {
     kprintf(message);
+    while(1);
 }

@@ -33,9 +33,6 @@ void kprintf(const char *format, ...) {
                 format++;
             } else if (*format == 'd' || *format == 'i') {
                 int number = va_arg(argp, int);
-                if (number == 0) {
-                    kprintf("zero\n");
-                }
                 if (number < 0) {
                     tty_putchar('-');
                     number = -number;
