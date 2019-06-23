@@ -1,2 +1,3 @@
-- Rewrite tty (move logic to platform-independent code)
-- Add kernel tty output functions (something like kprintf in linux)
+- Add paging support
+- Add page level allocation
+- Add some allocator (kmalloc, kfree, and so on)
