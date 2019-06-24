@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <kernel/tty.h>
 #include <kernel/arch/tty.h>
-#include <kernel/mm.h>
+#include <kernel/mm/mm.h>
 #include <kernel/panic.h>
 
 #include "vga.h"

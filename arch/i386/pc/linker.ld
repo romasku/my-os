@@ -39,9 +39,9 @@ SECTIONS
 	}
 	_end_of_kernel = . - 0xC0000000;
 
-	.boot_tmp ALIGN(4K) : AT(ADDR (.boot_tmp) -  0xC0000000)
+	.root_paging ALIGN(4K) : AT(ADDR (.root_paging) -  0xC0000000)
 	{
-		*(.boot_tmp)
+		*(.root_paging)
 	}
 
 	/* The compiler may produce other sections, by default it will put them in

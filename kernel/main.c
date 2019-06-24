@@ -1,5 +1,5 @@
 #include <kernel/tty.h>
-#include <kernel/mm.h>
+#include <kernel/mm/mm.h>
 
 int kernel_main() {
     tty_initialize();

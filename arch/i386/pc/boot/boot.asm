@@ -25,8 +25,11 @@ extern		_init
 extern		_fini
 extern		kernel_main
 
-section		.boot_tmp
-tmp_page_dirs:
+global mm_root_dir_paging_table
+
+
+section		.root_paging
+mm_root_dir_paging_table:
             ; Initial mapping
             ; first physical 16 mb is mapped to first [0, 16mb] and [3gb, 3gb+16mb] virtual
             dd 		(tmp_page_entries + 4096 * 0 - virtual_start) + 0b00000000011
@@ -38,7 +41,9 @@ tmp_page_dirs:
             dd 		(tmp_page_entries + 4096 * 1 - virtual_start) + 0b00000000011
             dd 		(tmp_page_entries + 4096 * 2 - virtual_start) + 0b00000000011
             dd 		(tmp_page_entries + 4096 * 3 - virtual_start) + 0b00000000011
-            resb 	(256 - 4) * 4
+            resb 	(256 - 5) * 4
+            ; One more page directory (will be mapped to directory content itself to easier life in future)
+            dd 		(tmp_page_entries + 4096 * 4 - virtual_start) + 0b00000000011
 tmp_page_entries:
             ; Allocate 4 page dirs - 16mb should be enough
             %assign i 0
@@ -47,6 +52,21 @@ tmp_page_entries:
             dd		i << 12 | 0b00000000011
             %assign i i+1
             %endrep
+            ; One more directory for page table it self
+            ; TODO: document hack going on here
+            %assign i 0
+            %rep    4
+            dd		(tmp_page_entries + (i << 12) - virtual_start) + 0b00000000011
+            %assign i i+1
+            %endrep
+            resb 	(768 - 4) * 4
+            %assign i 0
+            %rep    4
+            dd		(tmp_page_entries + (i << 12) - virtual_start) + 0b00000000011
+            %assign i i+1
+            %endrep
+            resb 	(256 - 5) * 4
+            dd		(tmp_page_entries + (4 << 12) - virtual_start) + 0b00000000011
 
 
 
@@ -55,7 +75,7 @@ global 		_start:function (_start.end - _start)
 global		start:function
 _start:
             ; Load Paging Dirs
-			mov 	ecx, tmp_page_dirs - virtual_start
+			mov 	ecx, mm_root_dir_paging_table - virtual_start
 			mov 	cr3, ecx
 			; Set cr0 paging flag
 			mov 	ecx, cr0
