@@ -20,7 +20,7 @@ int page_part_of_free_pages_stack(size_t addr, size_t free_pages_cnt_estimate) {
     return ((size_t) &_end_of_kernel < addr && addr < (size_t) &_end_of_kernel + free_pages_cnt_estimate * 4);
 }
 
-void paging_init(multiboot_info_t* mbd) {
+void paging_init(multiboot_info_t *mbd, void **kernel_heap_start) {
     pages_stack_top = pages_stack_bottom = (size_t *) ((size_t) &_end_of_kernel + KERNEL_MEM_OFFSET);
 
     kprintf("Preparing stack of free pages... ");
@@ -40,13 +40,23 @@ void paging_init(multiboot_info_t* mbd) {
         }
     }
     kprintf("%d pages stored\n", free_pages_cnt());
+
+    *kernel_heap_start = (void *)align_page_top((size_t)(KERNEL_MEM_OFFSET + &_end_of_kernel
+                                                         + free_pages_cnt_estimate * 4));
+
+    // Currently, loader have mapped virtual [3gb, 3gb+16mb] to [0,16mb].
+    // We are going to use heap properly after this moment, so we have to unmap the rest
+    size_t addr_to_unmap = (size_t)*kernel_heap_start;
+    while (addr_to_unmap < KERNEL_MEM_OFFSET + 16 * 1024 * 1024) {
+        arch_unmap_page(addr_to_unmap);
+        addr_to_unmap += PAGE_SIZE;
+    }
 }
 
 
 void free_page(size_t page) {
     // We can safely move to the top here - pages of this stack will never go to the free pages
     *pages_stack_top = page;
-    //kprintf("Current top: %u\n", pages_stack_top);
     pages_stack_top++;
 }
 

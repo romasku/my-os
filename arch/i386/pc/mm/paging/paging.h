@@ -41,5 +41,6 @@ struct page_table_entry {
 };
 
 void setup_paging();
+extern void invalidate_page(size_t addr);
 
 #endif //I386_PC_PAGING_H
