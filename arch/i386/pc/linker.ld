@@ -37,12 +37,13 @@ SECTIONS
 		*(COMMON)
 		*(.bss)
 	}
-	_end_of_kernel = . - 0xC0000000;
 
 	.root_paging ALIGN(4K) : AT(ADDR (.root_paging) -  0xC0000000)
 	{
 		*(.root_paging)
 	}
+
+	_end_of_kernel = . - 0xC0000000;
 
 	/* The compiler may produce other sections, by default it will put them in
 	   a segment with the same name. Simply add stuff here as needed. */
