@@ -13,7 +13,6 @@ void setup_paging() {
     mm_current_paging_table = (struct page_table_entry *) 0xffc00000;
 }
 
-
 paging_ctx arch_get_root_paging_ctx() {
     return (paging_ctx) arch_virtual_to_physical((size_t) mm_root_dir_paging_table);
 }
