@@ -1,2 +1,2 @@
-- Add some allocator (kmalloc, kfree, and so on)
 - Return to paging code and document how page tables are mapped
+- Implement keyboard driver
