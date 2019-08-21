@@ -4,26 +4,31 @@ This is small project about developing x86 kernel. Currently, I follow guides fr
 
 ## Features working:
 - VGA terminal output
-- Memory managment using paging (on for kernel space, as I don't have any user space). It uses my allocator from https://github.com/romasku/lpalloc.
+- Memory management using paging (on for kernel space, as I don't have any user space). It uses my allocator
+ from https://github.com/romasku/lpalloc.
 
 ## Building and running
 Build system is cmake. I suggest using qemu to run kernel (it is multiboot compliant kernel).
 ### To Build:
-```bash 
+```sh
 cmake CMakeLists.txt -B cmake-build-debug
 cd cmake-build-debug
 make
 ``` 
 ### To Run:
-```
+```sh
 ./tools/run-qemu.sh
 ```
 
 ### Dependencies
-For building, you will need a i686-elf-gcc cross-compiler. Please refer to osdev wiki for details about installing it. Then you will need to modify CMakeLists.txt as currently it uses global path to it.
-For running, please install qemu for you system. On arch linux, it can be done using `sudo pacman -S qemu`
+To be able to build, you'll need a i686-elf-gcc cross-compiler. On arch, you can try to use `i686-elf-gcc` AUR package. 
+If you use other distro/platform, please refer to [osdev wiki](https://wiki.osdev.org/GCC_Cross-Compiler), it has 
+comprehensive guide how to build cross compiler it.
+After installation, please make sure that `i686-elf-gcc` executable is in your PATH. CMake script assume it is there.
+
+To be able to run, please install qemu. On Arch linux, it can be done using `sudo pacman -S qemu`, on ubuntu, you can 
+use `sudo apt install qemu`.
 
 ### TODO
-- Remove absolute path from build system
 - Setup interrupts
 - Implement keyboard driver

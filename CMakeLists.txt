@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 3.14.0)
 set(ARCH i386)
 set(COMPILER_ARCH i686)
 set(PLATFORM pc)
-set(TOOLS_DIR /home/romasku/mine/my-os/cross)
 
 # CMAKE setup
 
@@ -12,7 +11,7 @@ enable_language(ASM_NASM)
 
 # Build setup
 
-set(CMAKE_C_COMPILER ${TOOLS_DIR}/bin/${COMPILER_ARCH}-elf-gcc)
+set(CMAKE_C_COMPILER ${COMPILER_ARCH}-elf-gcc)
 set(CMAKE_C_FLAGS "-O2 -flto -Wall -Wextra -ffreestanding -isystem ${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> -felf32 -o <OBJECT> <SOURCE>")
 
