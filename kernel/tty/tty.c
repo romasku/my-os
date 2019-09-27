@@ -57,8 +57,11 @@ void tty_sync_buffer() {
 void _tty_shift_buffer() {
     for (size_t y = 0; y < buffer_height - 1; y++) {
         for (size_t x = 0; x < buffer_width; x++) {
-            tty_buffer[y][x] = tty_buffer[y+1][x];
+            tty_buffer[y][x] = tty_buffer[y + 1][x];
         }
+    }
+    for (size_t x = 0; x < buffer_width; x++) {
+        tty_buffer[buffer_height - 1][x] = 0;
     }
 }
 

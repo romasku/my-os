@@ -20,7 +20,7 @@ int kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     while (1) {
         uint32_t clock = get_timer_clock();
         if ((old_clock != clock) && (clock % 1000 == 0)) {
-            kprintf("Timer %d\n", clock / 1000);
+            kprintf("Seconds from start: %d\n", clock / 1000);
         }
         old_clock = clock;
     }
