@@ -16,7 +16,6 @@ void base_interrupt_handler(uint8_t interrupt_code) {
     if (interrupt_code < 32) {
         kprintf("CPU interrupt happened: %d\n", interrupt_code);
     } else {
-        kprintf("IRQ happened: %d\n", interrupt_code - 32);
         int irq = interrupt_code - 32;
         for (int i = 0; i < MAX_IRQ_HANDLERS; i++) {
             if (handlers[irq][i] != NULL) {

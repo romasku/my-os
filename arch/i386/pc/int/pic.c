@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "pic.h"
+#include "../util/port_io.h"
 
 #define PIC1            0x20
 #define PIC2            0xA0
@@ -15,10 +16,6 @@
 
 #define ICW4_8086	    0x01		/* 8086/88 (MCS-80/85) mode */
 
-
-extern void io_wait();
-extern uint8_t in_byte(uint16_t port);
-extern void out_byte(uint16_t port, uint8_t data);
 
 void pic_init() {
 
