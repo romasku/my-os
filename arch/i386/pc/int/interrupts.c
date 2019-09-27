@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <kernel/kprintf.h>
 #include <kernel/lib/string.h>
+#include <kernel/int/interrupts.h>
 #include "idt.h"
 #include "pic.h"
 #include "../mm/gdt/gdt_segments.h"
@@ -11,12 +12,8 @@ extern void load_idt(struct IDT_entry *idt, size_t size);
 extern void enable_interrupts();
 struct IDT_entry idt[48];
 
-void c_interupt_handler(uint8_t interrupt_code) {
-    if (interrupt_code < 32) {
-        kprintf("CPU interrupt happened: %d\n", interrupt_code);
-    } else {
-        kprintf("IRQ happened: %d\n", interrupt_code - 32);
-    }
+void c_interrupt_handler(uint8_t interrupt_code) {
+    base_interrupt_handler(interrupt_code);
     if (interrupt_code >= 32) {
         pic_end_of_interrupt((uint8_t) (interrupt_code - 32));
     }

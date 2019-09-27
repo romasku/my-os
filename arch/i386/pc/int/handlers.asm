@@ -22,7 +22,7 @@ dd		handler_%[i]
 
 section .text
 
-extern c_interupt_handler
+extern c_interrupt_handler
 
 %macro handler 1
 global handler_%1:function
@@ -31,7 +31,7 @@ handler_%1:
 	cld
 	sub  	esp, 12
 	push 	DWORD %1
-	call 	c_interupt_handler
+	call 	c_interrupt_handler
 	add  	esp, 16
 	popa
 	iret
