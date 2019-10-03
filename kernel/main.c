@@ -5,6 +5,7 @@
 #include <kernel/int/interrupts.h>
 #include <kernel/dev/timer.h>
 #include <kernel/kprintf.h>
+#include <kernel/dev/i8042.h>
 
 int kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     /* Initialize terminal interface */
@@ -15,13 +16,14 @@ int kernel_main(multiboot_info_t* mbd, unsigned int magic) {
     }
     mm_init(mbd);
     init_timer();
+    init_i8042();
     interrupts_init();
     uint32_t old_clock = get_timer_clock();
     while (1) {
         uint32_t clock = get_timer_clock();
-        if ((old_clock != clock) && (clock % 1000 == 0)) {
-            kprintf("Seconds from start: %d\n", clock / 1000);
-        }
+//        if ((old_clock != clock) && (clock % 1000 == 0)) {
+//            kprintf("Seconds from start: %d\n", clock / 1000);
+//        }
         old_clock = clock;
     }
 }
