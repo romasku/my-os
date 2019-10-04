@@ -94,16 +94,18 @@ void init_i8042() {
     }
 }
 
-void enable_device(uint8_t device_num) {
+void ps2_enable_device(uint8_t device_num) {
     send_command(I8042_COMMAND_READ_CONF_BYTE);
     uint8_t conf_byte = read_data_byte();
     if (device_num == I8042_DEV_1) {
         send_command(I8042_COMMAND_ENABLE_PS_PORT_1);
         conf_byte |= I8042_CONF_INTERRUPT_PORT_1;
+        conf_byte &= ~I8042_CONF_DISABLED_PORT_1;
     }
     if (device_num == I8042_DEV_2) {
         send_command(I8042_COMMAND_ENABLE_PS_PORT_2);
         conf_byte |= I8042_CONF_INTERRUPT_PORT_2;
+        conf_byte &= ~I8042_CONF_DISABLED_PORT_2;
     }
     send_command(I8042_COMMAND_WRITE_CONF_BYTE);
     write_data_byte(conf_byte);
@@ -129,6 +131,7 @@ size_t ps2_device_read(uint8_t *buffer, size_t count) {
     size_t count_read = 0;
     while (count_read < count && get_status() & I8042_STATUS_OUT_BUFFER_FULL) {
         buffer[count_read] = read_data_byte_no_wait();
+        count_read++;
     }
-    return count;
+    return count_read;
 }
