@@ -8,6 +8,7 @@
 #include <kernel/dev/i8042.h>
 #include <kernel/dev/ps2_kbd.h>
 #include <kernel/config.h>
+#include <kernel/bus/pci.h>
 
 
 int kernel_main(multiboot_info_t *mbd, unsigned int magic) {
@@ -21,6 +22,7 @@ int kernel_main(multiboot_info_t *mbd, unsigned int magic) {
     init_timer();
     init_i8042();
     init_ps2_keyboard();
+    init_pci_bus();
     interrupts_init();
     uint32_t old_clock = get_timer_clock();
     while (1) {
