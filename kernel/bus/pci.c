@@ -23,8 +23,7 @@ void init_pci_bus() {
     for (uint16_t bus = 0; bus < 256; bus++) {
         for(uint8_t dev = 0; dev < 32; dev++) {
             if (is_device_valid(bus, dev)) {
-                kprintf("PCI DEV FOUND!\n");
-                kprintf("BUS: %d DEV: %d FIRST 4 bytes: %u\n", bus, dev, pci_read_dword(bus, dev, 0, 0));
+                kprintf("PCI DEV: %d.%d - %u\n", bus, dev, pci_read_dword(bus, dev, 0, 0));
             }
         }
     }
