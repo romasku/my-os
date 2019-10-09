@@ -13,7 +13,7 @@ struct gdt_entry_data {
     uint32_t limit;
     int present: 1;
     unsigned int privilege_level: 2;
-    int type_system: 1;
+    int type_tss: 1;
     int executable: 1;
     int direction_grows_down: 1;
     int conforming: 1;

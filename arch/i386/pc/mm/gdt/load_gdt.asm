@@ -1,6 +1,7 @@
 section .text
 global load_gdt:function
 global reload_segments:function
+global _enable_tss:function
 extern mm_gdtr_descriptor
 
 load_gdt:
@@ -17,3 +18,8 @@ after_cs_reload:
    	mov		gs, ax
    	mov		ss, ax
    	ret
+
+_enable_tss:
+   mov 	    ax, [esp + 4]
+   ltr      ax
+   ret

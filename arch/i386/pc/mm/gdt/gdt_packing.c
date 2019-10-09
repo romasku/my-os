@@ -1,23 +1,23 @@
 #include <kernel/kprintf.h>
 #include "gdt.h"
 
-uint64_t pack_limit(uint32_t limit) {
+static uint64_t pack_limit(uint32_t limit) {
     uint64_t limit_64 = limit;
     return (limit_64 & 0xffff) | ((limit_64 & 0xf0000) << 32);
 }
 
-uint64_t pack_base(uint32_t base) {
+static uint64_t pack_base(uint32_t base) {
     uint64_t base_64 = base;
     return ((base_64 & 0xffff) << 16) | ((base_64 & 0xff0000) << 16) | ((base_64 & 0xff000000) << 32);
 }
 
 
-uint64_t pack_flags(struct gdt_entry_data data) {
+static uint64_t pack_flags(struct gdt_entry_data data) {
     uint64_t result = 0;
     // Access byte part
     result |= (data.present & 1ll) << 47;
     result |= (data.privilege_level & 3ll) << 45;
-    result |= ((!data.type_system) & 1ll) << 44;
+    result |= ((!data.type_tss) & 1ll) << 44;
     result |= ((data.executable) & 1ll) << 43;
     if (data.executable) {
         result |= (data.direction_grows_down & 1ll) << 42;
@@ -25,6 +25,10 @@ uint64_t pack_flags(struct gdt_entry_data data) {
     } else {
         result |= (data.conforming & 1ll) << 42;
         result |= (data.data_writable & 1ll) << 41;
+    }
+    if (data.type_tss) {
+        // We need this bits set if this is TSS selector
+        result |= (0x9ll) << 40;
     }
     result |= (data.accessed & 1ll) << 40;
     // Flags part
