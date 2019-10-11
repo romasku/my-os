@@ -3,7 +3,9 @@
 #include <kernel/arch/tasks.h>
 #include <kernel/kprintf.h>
 #include <kernel/dev/timer.h>
+#include <kernel/arch/lock.h>
 
+lock_handle change_current_task_lock;
 uint32_t tasks_count = 0;
 
 static void task_0_logic() {
@@ -75,16 +77,19 @@ void do_scheduling() {
         next_task = tasks[0];
     }
     if (current_task != next_task) {
+        if (!lock_acquire_no_block(&change_current_task_lock)) {
+            return; // If someone else changes current task, we should let him do it
+        }
         arch_switch_tasks(current_task, next_task);
     }
 }
 
 void complete_task_switch(struct task *now_running) {
     current_task = now_running;
+    lock_release(&change_current_task_lock);
 }
 
 static void decrease_ticks(uint32_t milliseconds) {
-    // TODO: remove next if when locks are implemented
     if (current_task->ticks_left == 0) {
         return;
     }
