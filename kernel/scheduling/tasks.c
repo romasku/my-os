@@ -3,7 +3,7 @@
 #include <kernel/arch/tasks.h>
 #include <kernel/kprintf.h>
 #include <kernel/dev/timer.h>
-#include <kernel/arch/lock.h>
+#include <kernel/scheduling/lock.h>
 
 lock_handle change_current_task_lock;
 uint32_t tasks_count = 0;

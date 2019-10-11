@@ -9,6 +9,8 @@
  */
 void *ksbrk(intptr_t increment);
 #include <kernel/lib/string.h>
+#include <kernel/scheduling/lock.h>
+lock_handle malloc_lock;
 // !SYSTEM
 
 // Config constants
@@ -239,6 +241,7 @@ void return_memory_if_needed() {
 }
 
 void *malloc(size_t size) {
+    lock_acquire_schedule(&malloc_lock);
     check_init(); // We have to check that bin's system inited before doing anything.
 	size = request_size_to_allocated(size); // Get size of chunk we should allocate
 	int bin = to_bin_number(size); // Get bin that can contain chunk we need
@@ -296,10 +299,12 @@ void *malloc(size_t size) {
 	*allocated = size | USED_CHUNK_BIT;
 	*allocated_footer = size | USED_CHUNK_BIT;
 	// Return pointer to the start of the user's section of chunk
+    lock_release(&malloc_lock);
 	return ((void *)allocated) + sizeof(used_header_t);
 }
 
 void free(void *ptr) {
+    lock_acquire_schedule(&malloc_lock);
     check_init(); // We have to check that bin's system inited before doing anything.
     if (ptr == NULL) {
         return;
@@ -336,6 +341,7 @@ void free(void *ptr) {
         // Return chunk to the bins system.
         add_new_chunk_to_bin((void *) prev_chunk_end + sizeof(footer_t), size);
     }
+    lock_release(&malloc_lock);
 }
 
 void *calloc(size_t nmemb, size_t size) {
@@ -347,6 +353,7 @@ void *calloc(size_t nmemb, size_t size) {
 }
 
 void *realloc(void *ptr, size_t size) {
+    lock_acquire_schedule(&malloc_lock);
     used_header_t *old_header = ptr - sizeof(used_header_t);
     size_t old_size = *old_header & (~USED_CHUNK_BIT);
     size_t new_chunk_size = request_size_to_allocated(size);
@@ -359,6 +366,7 @@ void *realloc(void *ptr, size_t size) {
         }
         memcpy(new_addr, ptr, copy_size);
         free(ptr);
+        lock_release(&malloc_lock);
         return new_addr;
     } else {
         size_t free_size = old_size - new_chunk_size;
@@ -368,6 +376,7 @@ void *realloc(void *ptr, size_t size) {
             *old_header = *new_footer = new_chunk_size | USED_CHUNK_BIT;
             add_new_chunk_to_bin((void *)new_footer + sizeof(footer_t), free_size);
         }
+        lock_release(&malloc_lock);
         return ptr;
     }
 }
