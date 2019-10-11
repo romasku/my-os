@@ -13,10 +13,10 @@ extern void enable_interrupts();
 struct IDT_entry idt[48];
 
 void c_interrupt_handler(uint8_t interrupt_code) {
-    base_interrupt_handler(interrupt_code);
-    if (interrupt_code >= 32) {
+    if (32 <= interrupt_code && interrupt_code <= 48) {
         pic_end_of_interrupt((uint8_t) (interrupt_code - 32));
     }
+    base_interrupt_handler(interrupt_code);
 }
 
 void arch_interrupts_init() {
@@ -36,7 +36,7 @@ void arch_interrupts_init() {
         idt[i].offset_2 = (uint16_t) (handlers_array[i - 11] >> 16);
         idt[i].zero = 0;
         idt[i].selector = system_code_segment;
-        idt[i].type = BIT_PRESENT | BIT_LEVEL_0 | BIT_INT_GATE_32;
+        idt[i].type = BIT_PRESENT | BIT_LEVEL_0 | BIT_TRAP_GATE_32;
     }
     load_idt(idt, sizeof(struct IDT_entry) * 48);
     pic_init();

@@ -11,6 +11,9 @@ dd 			multiboot_magic
 dd			multiboot_flags
 dd			multiboot_check  ; This is checksum
 
+; Exported symbols
+global mm_root_dir_paging_table
+global stack_top
 
 ; Space for stack
 section 	.bss
@@ -24,8 +27,6 @@ virtual_start equ 0xC0000000
 extern		_init
 extern		_fini
 extern		kernel_main
-
-global mm_root_dir_paging_table
 
 
 section		.root_paging
@@ -88,7 +89,7 @@ after_load:
 			; Setup stack
 			mov esp, stack_top
 			; Save multiboot params
-			add esp, 8
+			sub esp, 8
 			push eax
 			push ebx
 
